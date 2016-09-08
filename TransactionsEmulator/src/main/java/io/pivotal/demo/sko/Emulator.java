@@ -155,7 +155,7 @@ public class Emulator implements CommandLineRunner {
 		private void loadPoSCounties() throws IOException {
 			counties = new ArrayList<String>();
 			
-			InputStream is = ClassLoader.getSystemResourceAsStream("counties.csv");
+			InputStream is = ClassLoader.getSystemResourceAsStream("BOOT-INF/classes/counties.csv");
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			
 			String line = br.readLine();  //skip header

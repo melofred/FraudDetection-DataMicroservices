@@ -7,7 +7,6 @@ vf.gf.*
 *.log
 **/.idea/**/*.*
 **/.gradle/**/*.*
-**/gradle/**/*.*
 **/.class
 **/.Rapp.history
 **/.settings

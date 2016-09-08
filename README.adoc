@@ -98,7 +98,7 @@ cd ..
 ```
 cd TransactionsEmulator
 ./gradlew clean build -x test
-./gradlew bootRun
+java -jar ./build/libs/PoS_Emulator-1.0.0.BUILD-SNAPSHOT.jar
 ```
 
 8 - Switch back to the `TransactionsConsole UI` and see transactions happening.

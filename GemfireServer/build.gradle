@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'spring-boot'
 apply plugin: 'java'
 apply plugin: 'eclipse'
-
+// apply plugin: "maven"
 
 repositories {
     mavenCentral()        
@@ -19,13 +19,10 @@ repositories {
     maven { url "http://repo.spring.io/libs-snapshot" }
 }
 
-
 dependencies {
-
     compile ("io.pivotal.gemfire:gemfire-greenplum:1.0.0-beta-6-SNAPSHOT")
     compile ("com.gemstone.gemfire:gemfire:8.1.0")
-    compile ("org.apache.logging.log4j:log4j-core:2.4")	
-    
+    compile ("org.apache.logging.log4j:log4j-core:2.4")	    
 }
 
 jar {
@@ -41,7 +38,6 @@ task serverJar(type: Jar, dependsOn: jar){
 
 bootRepackage.withJarTask = jar
 
-
 artifacts{
     archives jar, serverJar
 }   
@@ -49,3 +45,5 @@ artifacts{
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
+
+//install.dependsOn(bootRepackage)
