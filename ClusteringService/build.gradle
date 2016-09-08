@@ -94,8 +94,9 @@ dependencies {
 		exclude group: 'com.fasterxml.jackson.core'
 	}
 
-	compile ('com.redislabs:spark-redis:0.1.1'){
-    	exclude group: 'org.slf4j'	
+//	compile ('com.redislabs:spark-redis:0.1.1'){
+	compile ('RedisLabs:spark-redis:0.3.2'){
+		exclude group: 'org.slf4j'
 		exclude group: 'org.scala-lang'
 		exclude group: 'org.apache.spark'	
 	}
@@ -119,6 +120,9 @@ tasks.withType(ScalaCompile) {
     scalaCompileOptions.useAnt = false
 }
 
-
-
+repositories {
+    maven {
+        url  "http://dl.bintray.com/spark-packages/maven"
+    }
+}
 

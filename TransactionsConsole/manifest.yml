@@ -1,7 +1,7 @@
 ---
 applications:
 - name: webconsole
-  memory: 512M 
+  memory: 256M
   instances: 1
   host: transactions-console
   path: build/libs/WebConsole.jar
