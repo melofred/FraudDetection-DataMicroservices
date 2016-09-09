@@ -27,7 +27,7 @@ export PATH=$GEODE_HOME/bin:$PATH
 * Edit the file `TransactionsEmulator/src/main/resources/application.properties`, replacing the `geodeUrl` variable with the correct Geode IP. 
 * Start `pcfdev`, if not running yet. At least 6GB of memory is required!
 ```
-cf dev start -m 61144
+cf dev start -m 6144
 cf login -a https://api.local.pcfdev.io --skip-ssl-validation 
 ```
 * Start `Greenplum` or `PostgreSQL`. See <<appendix1-postgresql-setup>> for instructions how to configure PostgreSQL.
