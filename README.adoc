@@ -14,13 +14,12 @@ image::arch-2.jpg[Architecture]
 * Spark-redis (tested with v0.1.1) - installed from binray maven repository
   
 === Preparing the environment
-* Download and install http://apache.org/dyn/closer.cgi/incubator/geode/1.0.0-incubating.M3/apache-geode-1.0.0-incubating.M3.tar.gz[Apache Geode M3]
-** Export the variable `$GEODE_HOME`, pointing to your local GemFire / Geode server home.
+* Download and install http://apache.org/dyn/closer.cgi/incubator/geode/1.0.0-incubating.M3/apache-geode-1.0.0-incubating.M3.tar.gz[Apache Geode M3]. Export the variable `$GEODE_HOME`, pointing to your local `GemFire`/`Geode` server home.
 ```
 export GEODE_HOME=<path to apache-geode-1.0.0-incubating.M3>
 export PATH=$GEODE_HOME/bin:$PATH
-
 ```
+
 * Edit the file `start-scdf-pcfdev.sh`, in order to satisfy your pcfdev environment info and SCDF binaries path. 
 ** Download the SCDF server from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-server-cloudfoundry/1.0.0.RELEASE/spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar[spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar].
 ** Download the SCDF shell from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-shell/1.0.0.RELEASE/spring-cloud-dataflow-shell-1.0.0.RELEASE.jar[spring-cloud-dataflow-shell-1.0.0.RELEASE.jar]
