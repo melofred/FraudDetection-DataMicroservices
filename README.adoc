@@ -8,14 +8,19 @@ image::arch-2.jpg[Architecture]
 === Requirements
 
 * CloudFoundry (tested with pcfdev v0.66)
-* Apache Geode (tested with v1.0.0-incubating.MM) - to be replaced by GemFire 9.0 when that is released
+* Apache Geode (tested with http://apache.org/dyn/closer.cgi/incubator/geode/1.0.0-incubating.M3/apache-geode-1.0.0-incubating.M3.tar.gz[apache-geode-1.0.0-incubating.M3] ) - to be replaced by GemFire 9.0 when that is released
 * PostgreSQL (tested with 9.5.3) - to be replaced by Greenplum server once GemFire 9.0 is released
 * Spring Cloud Dataflow (tested with 1.0.0.RELASE)
 * Spark-redis (tested with v0.1.1) - installed from binray maven repository
   
 === Preparing the environment
+* Download and install http://apache.org/dyn/closer.cgi/incubator/geode/1.0.0-incubating.M3/apache-geode-1.0.0-incubating.M3.tar.gz[Apache Geode M3]
+** Export the variable `$GEODE_HOME`, pointing to your local GemFire / Geode server home.
+```
+export GEODE_HOME=<path to apache-geode-1.0.0-incubating.M3>
+export PATH=$GEODE_HOME/bin:$PATH
 
-* Export the variable `$GEODE_HOME`, pointing to your local GemFire / Geode server home.
+```
 * Edit the file `start-scdf-pcfdev.sh`, in order to satisfy your pcfdev environment info and SCDF binaries path. 
 ** Download the SCDF server from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-server-cloudfoundry/1.0.0.RELEASE/spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar[spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar].
 ** Download the SCDF shell from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-shell/1.0.0.RELEASE/spring-cloud-dataflow-shell-1.0.0.RELEASE.jar[spring-cloud-dataflow-shell-1.0.0.RELEASE.jar]
