@@ -34,7 +34,7 @@ cf login -a https://api.local.pcfdev.io --skip-ssl-validation
 ** Use the DDL statements in `scripts/model_postgres.sql` to create the database model. 
 ** Import the data from tables using the csv files `scripts/pos_device.csv`, `scripts/zip_codes_states.csv` and `scripts/transaction.csv`.  This step won't be necessary when GemFire 9.0 is released (it will write transactions directly to Greenplum).
 * Start GemFire/Geode using the script `GemFireServer/startup.sh`
-* Start the Spring Cloud Dataflow server (or deploy it to pcfdev, if you prefer). Use the `start-scdf-pcdev.sh` script. 
+* Start the Spring Cloud Dataflow server (or deploy it to pcfdev, if you prefer). Use the `start-scdf-pcdev.sh` script. Open http://192.168.11.1:9393/dashboard/index.html to acces the SCDF dashboard.
 
 === Buils all SDDF 1.0.2 apps localy. Enable the PMML processor.
 
@@ -48,25 +48,17 @@ git checkout tags/v1.0.2.RELEASE
 ```
 
 * In `spring-cloud-stream-app-generator/pom.xml` uncomment the `PMML` processor:
-
 ```
 <pmml-processor>
    <extraTestConfigClass>org.springframework.cloud.stream.app.test.pmml.PmmlProcessorTestConfiguration.class</extraTestConfigClass>
 </pmml-processor>
 ```
 
-* Build all apps and install them in the local maven repository
-
+* Build all SCDF apps and install them in the local maven repository
 ```
 ./mvnw clean install -DskipTests
-```
-
-* Generate the apps projects 
-
-```
 ./generateApps.sh
-cd ./apps
-./mvnw clean install -DskipTests
+./mvnw clean install -f ./apps/pom.xml -DskipTests
 ```
 
 === Running the app

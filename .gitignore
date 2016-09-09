@@ -18,3 +18,5 @@ vf.gf.*
 **/locator/**/*.*
 start-scdf-*.sh
 dump.rdb
+spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar
+spring-cloud-dataflow-shell-1.0.0.RELEASE.jar
