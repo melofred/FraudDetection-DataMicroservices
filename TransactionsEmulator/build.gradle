@@ -32,19 +32,6 @@ group = 'io.pivotal.demo'
 archivesBaseName = 'PoS_Emulator'
 version = '1.0.0.BUILD-SNAPSHOT'
 
-/*
-jar {
-    baseName='PoS_Emulator'
-    version = version
-}
-
-bootRepackage.withJarTask = jar
-
-artifacts{
-    archives jar
-}   
-*/
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }

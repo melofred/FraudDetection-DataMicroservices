@@ -16,15 +16,21 @@ image::arch-2.jpg[Architecture]
 === Preparing the environment
 
 * Export the variable `$GEODE_HOME`, pointing to your local GemFire / Geode server home.
-* Edit the file `start-scdf-pcfdev.sh`, in order to satisfy your pcfdev environment info and SCDF binaries path
+* Edit the file `start-scdf-pcfdev.sh`, in order to satisfy your pcfdev environment info and SCDF binaries path. 
+** Download the SCDF server from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-server-cloudfoundry/1.0.0.RELEASE/spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar[spring-cloud-dataflow-server-cloudfoundry-1.0.0.RELEASE.jar].
+** Download the SCDF shell from: http://repo.spring.io/libs-release/org/springframework/cloud/spring-cloud-dataflow-shell/1.0.0.RELEASE/spring-cloud-dataflow-shell-1.0.0.RELEASE.jar[spring-cloud-dataflow-shell-1.0.0.RELEASE.jar]
 * Edit the file `GemFireServer/startup.gfsh`, replacing the IPs with your local address on the pcfdev network (default is 192.168.11.1, for the pcfdev server running on 192.168.11.11). If in doubt, check your pcfdev VM Ip address.
 * Edit the file `TransactionsEmulator/src/main/resources/application.properties`, replacing the `geodeUrl` variable with the correct Geode IP. 
-* Start pcfdev, if not running yet.
-* Start Greenplum (or PostgreSQL)
-* Use the DDL statements in `scripts/model_postgres.sql` to create the database model. 
-* Import the data from tables using the csv files `scripts/pos_device.csv`, `scripts/zip_codes_states.csv` and `scripts/transaction.csv`.  This step won't be necessary when GemFire 9.0 is released (it will write transactions directly to Greenplum).
+* Start `pcfdev`, if not running yet. At least 6GB of memory is required!
+```
+cf dev start -m 61144
+cf login -a https://api.local.pcfdev.io --skip-ssl-validation 
+```
+* Start `Greenplum` or `PostgreSQL`. See <<appendix1-postgresql-setup>> for instructions how to configure PostgreSQL.
+** Use the DDL statements in `scripts/model_postgres.sql` to create the database model. 
+** Import the data from tables using the csv files `scripts/pos_device.csv`, `scripts/zip_codes_states.csv` and `scripts/transaction.csv`.  This step won't be necessary when GemFire 9.0 is released (it will write transactions directly to Greenplum).
 * Start GemFire/Geode using the script `GemFireServer/startup.sh`
-* Start the Spring Cloud Dataflow server (or deploy it to pcfdev, if you prefer)
+* Start the Spring Cloud Dataflow server (or deploy it to pcfdev, if you prefer). Use the `start-scdf-pcdev.sh` script. 
 
 === Buils all SDDF 1.0.2 apps localy. Enable the PMML processor.
 
@@ -61,18 +67,17 @@ cd ./apps
 
 === Running the app
 
-==== Start PCF
-At least 6GB of memory is required!
-```
-cf dev start -m 61144
-cf login -a https://api.local.pcfdev.io --skip-ssl-validation 
-```
-
 ==== Setup
 
-1 - Create the `gemfire` user-provided service in CF using the script `TransactionsConsole/cf-createservice.txt` . If necessary, modify it to point to your correct GemFire server.
+1 - Create the `gemfire` user-provided service in CF using the script `TransactionsConsole/cf-createservice.txt`. If necessary, modify it to point to your correct GemFire server.
+```
+cf cups gemfire -p '{"locatorHost":"192.168.11.1","locatorPort":"10334", "RestEndpoint":"http://192.168.11.1:8888/gemfire-api/v1/"}'
+```
 
-2 - Create the `gpdb` user-provided service in CF using the script `ClusteringService/cf-createservice.txt` . If necessary, modify it to point to your correct Greenplum/PostgreSQL server.
+2 - Create the `gpdb` user-provided service in CF using the script `ClusteringService/cf-createservice.txt`. If necessary, modify the Greenplum/PostgreSQL server address and access credentials.
+```
+cf cups gpdb -p '{"URL":"jdbc:postgresql://192.168.11.1:5432/gemfire?user=pivotal&password=pivotal"}'
+```
 
 3 - Create a RabbitMQ service on CF called `rabbit`. This will be our SCDF transport.
 ```
@@ -124,10 +129,10 @@ When evaluating the PMML model, each transaction will be assigned to the closest
 
 ==== Creating the first two streams in SCDF 
 
-Strart SCDF shell:
+Start SCDF shell:
 ```
-java -jar ./spring-cloud-dataflow-shell-1.0.0.RELEASE.jar
-```
+java -Xmx128M -jar ./spring-cloud-dataflow-shell-1.0.0.RELEASE.jar
+``` 
 
 13 - Using the SCDF shell, import the common applications by running
 ```
@@ -139,7 +144,6 @@ dataflow:>app import --uri http://bit.ly/1-0-2-GA-stream-applications-rabbit-mav
 cd Enricher-processor
 ./gradlew build install -x test
 ```
-TODO: Current gradle build script will NOT install the artifact in the local Maven Repo!!!
 
 Register the Enricher in SCDF:
 ```
@@ -239,6 +243,35 @@ In case you were successful until this point and haven't seen the flagged transa
 * Redeploy the third stream, filtering by a different cluster.
 
 image::fraud-detection.png[Demo Screenshot]
+
+=== Appendices
+
+==== Appendix1: PostgreSQL Setup
+
+* Enable Postgres TCP/IP socket. Edit `postgresql.conf` and make sure `listen_addresses` is set to `*`.
+* Enable client authentication. Eidt `pg_hba.conf` and add `host all all 192.168.11.11/32 trust` entry.
+* Create user and database
+Open psql as super user `psql -p5432` and run:
+```
+CREATE USER pivotal WITH SUPERUSER LOGIN;
+ALTER ROLE pivotal WITH PASSWORD 'pivotal';
+CREATE DATABASE gemfire;
+GRANT ALL ON DATABASE gemfire TO pivotal;
+```
+
+* Edit the `model_postgres.sql` to set the absolute path to the CSV files.
+```
+COPY transaction FROM '<absolute path>/FraudDetection-DataMicroservices/scripts/transaction.csv' DELIMITER ',' CSV HEADER;	
+COPY zip_codes FROM '<absolute path>/FraudDetection-DataMicroservices/scripts/zip_codes_states.csv' DELIMITER ',' CSV HEADER;
+COPY pos_device FROM '<absolute path>/FraudDetection-DataMicroservices/scripts/pos_device.csv' DELIMITER ',' CSV HEADER;
+```
+
+* Create DDL and load the data
+```
+cd scripts
+psql -p5432 -U pivotal -d gemfire -f model_postgres.sql
+```
+
 
 
 
